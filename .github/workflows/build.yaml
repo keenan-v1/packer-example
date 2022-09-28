@@ -28,12 +28,6 @@ jobs:
           role-session-name: github-packer
           aws-region: ${{ env.AWS_REGION }}
 
-      # fix backwards incompatibilities in template
-      - name: Fix Template
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: fix
-
       # validate templates
       - name: Validate Template
         uses: hashicorp/packer-github-actions@master
