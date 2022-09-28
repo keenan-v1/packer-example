@@ -2,4 +2,7 @@
 
 echo "Doing things!"
 
-cp -v /tmp/src/etc /etc
+cp -vr /tmp/src/* /
+
+apt update
+apt -y upgrade
