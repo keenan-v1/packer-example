@@ -28,7 +28,11 @@ jobs:
           role-session-name: github-packer
           aws-region: ${{ env.AWS_REGION }}
 
-      # validate templates
+      - name: Packer init
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init
+
       - name: Validate Template
         uses: hashicorp/packer-github-actions@master
         with:
@@ -36,7 +40,6 @@ jobs:
           arguments: -syntax-only
           target: image.pkr.hcl
     
-      # build artifact
       - name: Build Artifact
         uses: hashicorp/packer-github-actions@master
         with:
