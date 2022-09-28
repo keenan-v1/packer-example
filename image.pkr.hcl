@@ -24,7 +24,7 @@ source "amazon-ebs" "debian" {
   ssh_username   = "admin"
   ssh_agent_auth = false
 
-  ami_name    = "keenan-debian-11-amd64"
+  ami_name    = "keenan-debian-11-amd64-" + timestamp()
   ami_regions = ["us-east-1"]
 }
 
@@ -37,8 +37,9 @@ build {
     source = "./src"
     destination = "/tmp"
   }
+
   provisioner "shell" {
-    execute_command = "sudo -i"
+    execute_command = "chmod +x {{ .Path }}; sudo bash {{ .Vars }} {{ .Path }}"
     script = "image.sh"
   }
 }
