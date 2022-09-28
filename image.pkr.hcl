@@ -34,7 +34,7 @@ build {
   ]
 
   provisioner "file" {
-    source = "/src"
+    source = "./src"
     destination = "/tmp"
   }
   provisioner "shell" {
