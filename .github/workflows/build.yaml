@@ -1,0 +1,54 @@
+name: Packer Image Build
+
+on:
+  push:
+    tags: ["v[0-9].[0-9]+.[0-9]+"]
+    branches:
+      - "main"
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ImageBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone repo
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::182402351974:role/github-packer
+          role-session-name: github-packer
+          aws-region: ${{ env.AWS_REGION }}
+
+      # fix backwards incompatibilities in template
+      - name: Fix Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: fix
+
+      # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: image.pkr.hcl
+    
+      # build artifact
+      - name: Build Artifact
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-color=false -on-error=abort"
+          target: image.pkr.hcl
+          working_directory: .
+        env:
+          PACKER_LOG: 1
