@@ -9,7 +9,7 @@ packer {
 
 source "amazon-ebs" "debian" {
   region = "us-east-1"
-  
+
   source_ami_filter {
     filters = {
       virtualization-type = "hvm"
@@ -19,12 +19,12 @@ source "amazon-ebs" "debian" {
     owners      = ["136693071363"]
     most_recent = true
   }
-  
+
   instance_type  = "t2.small"
   ssh_username   = "admin"
   ssh_agent_auth = false
 
-  ami_name    = "keenan-debian-11-amd64-" + timestamp()
+  ami_name    = "keenan-debian-11-amd64-${formatdate("YYYYMMDD-hhmmss", timestamp())}"
   ami_regions = ["us-east-1"]
 }
 
@@ -34,13 +34,13 @@ build {
   ]
 
   provisioner "file" {
-    source = "./src"
+    source      = "./src"
     destination = "/tmp"
   }
 
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; sudo bash {{ .Vars }} {{ .Path }}"
-    script = "image.sh"
+    script          = "image.sh"
   }
 }
 
